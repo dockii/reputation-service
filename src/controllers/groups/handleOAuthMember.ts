@@ -7,6 +7,7 @@ import { getBotometerScore } from "src/services/botometer"
 import { getGithubUserByToken } from "src/services/github"
 import { getRedditUserByToken } from "src/services/reddit"
 import { getTwitterUserByToken } from "src/services/twitter"
+import { getStackOverflowUserByToken } from "src/services/stackoverflow"
 import { GroupName } from "src/types/groups"
 import { logger } from "src/utils/backend"
 import { connectDatabase } from "src/utils/backend/database"
@@ -37,13 +38,8 @@ export default async function handleOAuthMemberController(req: NextApiRequest, r
                     break
                 }
                 case OAuthProvider.REDDIT: {
-                    const {
-                        id,
-                        has_subscribed_to_premium,
-                        total_karma,
-                        coins,
-                        linked_identities
-                    } = await getRedditUserByToken(token)
+                    const { id, has_subscribed_to_premium, total_karma, coins, linked_identities } =
+                        await getRedditUserByToken(token)
 
                     providerAccountId = id
                     reputation = calculateReputation(OAuthProvider.REDDIT, {
@@ -51,6 +47,16 @@ export default async function handleOAuthMemberController(req: NextApiRequest, r
                         karma: total_karma,
                         coins,
                         linkedIdentities: linked_identities.length
+                    })
+
+                    break
+                }
+                case OAuthProvider.STACKOVERFLOW: {
+                    const user = await getStackOverflowUserByToken(token)
+
+                    providerAccountId = user.id
+                    reputation = calculateReputation(OAuthProvider.STACKOVERFLOW, {
+                        reputation: user.reputation
                     })
 
                     break

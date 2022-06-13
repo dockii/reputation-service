@@ -4,7 +4,13 @@ import NextAuth, { Account, Session } from "next-auth"
 import { JWT } from "next-auth/jwt"
 import Providers from "next-auth/providers"
 import config from "src/config"
-import { createOAuthAccount, mapGithubProfile, mapRedditProfile, mapTwitterProfile } from "src/core/oauth"
+import {
+    createOAuthAccount,
+    mapGithubProfile,
+    mapRedditProfile,
+    mapStackOverflowProfile,
+    mapTwitterProfile
+} from "src/core/oauth"
 import { User } from "src/types/next-auth"
 import { logger } from "src/utils/backend"
 
@@ -24,6 +30,11 @@ export default NextAuth({
             clientId: config.REDDIT_CLIENT_ID || "",
             clientSecret: config.REDDIT_CLIENT_SECRET || "",
             profile: mapRedditProfile
+        }),
+        Providers.StackOverflow({
+            clientId: config.STACKOVERFLOW_CLIENT_ID || "",
+            clientSecret: config.STACKOVERFLOW_CLIENT_SECRET || "",
+            profile: mapStackOverflowProfile
         })
     ],
     pages: {

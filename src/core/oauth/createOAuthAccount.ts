@@ -3,6 +3,7 @@ import {
     GithubParameters,
     RedditParameters,
     TwitterParameters,
+    StackOverflowParameters,
     OAuthProvider,
     ReputationLevel
 } from "@interep/reputation"
@@ -48,6 +49,15 @@ export default async function createOAuthAccount(user: User, nextAuthAccount: Ac
                     karma,
                     coins,
                     linkedIdentities
+                })
+
+                break
+            }
+            case OAuthProvider.STACKOVERFLOW: {
+                const { reputation } = user as StackOverflowParameters
+
+                account.reputation = calculateReputation(provider, {
+                    reputation
                 })
 
                 break
